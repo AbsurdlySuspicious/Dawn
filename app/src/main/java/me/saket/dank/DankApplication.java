@@ -48,7 +48,7 @@ public class DankApplication extends Application {
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree());
     } else {
-      Timber.plant(Dank.dependencyInjector().crashReporter().timberTree());
+      Timber.plant(new TimberReleaseTree());
     }
 
     if (BuildConfig.DEBUG) {
