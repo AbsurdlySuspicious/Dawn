@@ -166,6 +166,7 @@ public class MediaHostRepository {
 
   // NOTE: If you see any "MaybeSource is empty" error, it means that the data couldn't be saved or read from cache store.
   private Single<MediaLink> resolveFromRemote(MediaLink unresolvedLink) {
+    Timber.tag("up_gfycat").d("resolveRemote\nlink %s", unresolvedLink.unparsedUrl());
     if (unresolvedLink instanceof StreamableUnresolvedLink) {
       return streamableRepository
           .video(((StreamableUnresolvedLink) unresolvedLink).videoId())

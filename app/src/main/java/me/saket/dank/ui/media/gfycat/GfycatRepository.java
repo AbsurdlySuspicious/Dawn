@@ -11,6 +11,7 @@ import me.saket.dank.di.DankApi;
 import me.saket.dank.urlparser.GfycatLink;
 import me.saket.dank.urlparser.UrlParserConfig;
 import retrofit2.HttpException;
+import timber.log.Timber;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -32,10 +33,14 @@ public class GfycatRepository {
   }
 
   public Single<GfycatLink> gif(String threeWordId) {
+    Timber.tag("up_gfycat").d("Repo call\ntwi %s", threeWordId);
     return Single.fromCallable(() -> data.get().isAccessTokenRequired())
-        .flatMap(headerRequired -> headerRequired
+        .flatMap(headerRequired -> {
+          Timber.tag("up_gfycat").d("Repo fmap\ntwi %s\nheaderRequired: %b", threeWordId, headerRequired);
+          return headerRequired
             ? authToken().flatMap(authHeader -> dankApi.get().gfycat(authHeader, threeWordId))
-            : dankApi.get().gfycat(threeWordId))
+            : dankApi.get().gfycat(threeWordId);
+        })
         .retry(error -> {
           // At the time of writing this, Gfycat allows API calls without auth headers.
           // I'm going to wing it to reduce API calls until Gfycat finds out and makes
@@ -49,6 +54,8 @@ public class GfycatRepository {
         })
         .map(response -> {
           String unparsedUrl = urlParserConfig.get().gfycatUnparsedUrlPlaceholder(response.data().threeWordId());
+          Timber.tag("up_gfycat").d("Repo response:\ntwi %s\nhc %s\nlc %s",
+              response.data().threeWordId(), response.data().highQualityUrl(), response.data().lowQualityUrl());
           return GfycatLink.create(unparsedUrl, response.data().threeWordId(), response.data().highQualityUrl(), response.data().lowQualityUrl());
         });
   }

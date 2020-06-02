@@ -18,6 +18,7 @@ import com.squareup.moshi.Moshi;
 import com.squareup.sqlbrite2.BriteDatabase;
 import com.squareup.sqlbrite2.SqlBrite;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,9 @@ import me.thanel.dawn.linkunfurler.LinkMetadataReader;
 import me.thanel.dawn.linkunfurler.LinkUnfurler;
 import me.thanel.dawn.linkunfurler.readers.GenericLinkMetadataReader;
 import me.thanel.dawn.linkunfurler.readers.PlayStoreLinkMetadataReader;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -101,8 +104,8 @@ public class RootModule {
 
     if (BuildConfig.DEBUG) {
       HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Timber.tag("OkHttp").d(message));
-      logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-      builder.addInterceptor(logging);
+      logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+      builder.addNetworkInterceptor(logging);
       builder.addNetworkInterceptor(new StethoInterceptor());
     }
     builder.addNetworkInterceptor(new OkHttpWholesomeAuthIntercepter());

@@ -317,9 +317,12 @@ public class UrlParser {
       if (capitalLetterCount == 3) {
         String highQualityVideoUrl = config.gfycatHighQualityUrlPlaceholder(threeWordId);
         String lowQualityVideoUrl = config.gfycatLowQualityUrlPlaceholder(threeWordId);
+        Timber.tag("up_gfycat").d("Resolved link: %s\ntwi %s\nhc %s\nlc %s", url, threeWordId,
+            highQualityVideoUrl, lowQualityVideoUrl);
         return GfycatLink.create(url, threeWordId, highQualityVideoUrl, lowQualityVideoUrl);
 
       } else {
+        Timber.tag("up_gfycat").d("Unresolved link: %s\ntwi %s", url, threeWordId);
         return GfycatUnresolvedLink.create(url, threeWordId);
       }
 
