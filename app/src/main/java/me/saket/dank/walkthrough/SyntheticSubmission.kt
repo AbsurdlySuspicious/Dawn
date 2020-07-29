@@ -34,7 +34,7 @@ class SyntheticSubmissionAndComments {
   }
 }
 
-class SyntheticSubmission(
+open class SyntheticSubmission(
   private val commentCount: Int,
   private val title: String
 ) : Submission() {
@@ -126,7 +126,7 @@ class SyntheticSubmission(
   override val vote: VoteDirection = VoteDirection.NONE
 }
 
-class SyntheticComment(
+open class SyntheticComment(
   override val body: String,
   private val parent: Submission,
   private val replies: List<Comment> = listOf(),
