@@ -9,6 +9,8 @@ import com.nytimes.android.external.cache3.CacheBuilder;
 import com.squareup.moshi.Moshi;
 import com.squareup.sqlbrite2.BriteDatabase;
 
+import me.saket.dank.mock.MockPost;
+import me.saket.dank.mock.MockPostList;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Listing;
 import net.dean.jraw.models.Submission;
@@ -108,17 +110,28 @@ public class SubmissionRepository {
    */
   @CheckResult
   public Observable<Pair<DankSubmissionRequest, SubmissionAndComments>> submissionWithComments(DankSubmissionRequest oldRequest) {
-    if (oldRequest.id().equalsIgnoreCase(SyntheticData.SUBMISSION_ID_FOR_GESTURE_WALKTHROUGH)) {
-      //Timber.i("Returning from Synthetic.");
-      return syntheticSubmissionForGesturesWalkthrough()
-          .map(syntheticSubmissionData -> {
-            //noinspection ConstantConditions
-            DankSubmissionRequest updatedRequest = oldRequest.toBuilder()
-                .commentSort(syntheticSubmissionData.getSubmission().getSuggestedSort(), SelectedBy.DEFAULT)
-                .build();
-            return Pair.create(updatedRequest, syntheticSubmissionData.toNonSynthetic());
-          })
-          .toObservable();
+    if (oldRequest.id().startsWith("syntheticsubmission")) {
+      if (oldRequest.id().equalsIgnoreCase(SyntheticData.SUBMISSION_ID_FOR_GESTURE_WALKTHROUGH)) {
+        //Timber.i("Returning from Synthetic.");
+        return syntheticSubmissionForGesturesWalkthrough()
+            .map(syntheticSubmissionData -> {
+              //noinspection ConstantConditions
+              DankSubmissionRequest updatedRequest = oldRequest.toBuilder()
+                  .commentSort(syntheticSubmissionData.getSubmission().getSuggestedSort(), SelectedBy.DEFAULT)
+                  .build();
+              return Pair.create(updatedRequest, syntheticSubmissionData.toNonSynthetic());
+            })
+            .toObservable();
+      }
+
+      MockPostList list = new MockPostList();
+      MockPost post = list.getList().get(oldRequest.id());
+
+      if (post != null) {
+        return Observable.just(Pair.create(oldRequest, post.toRealPost()));
+      } else {
+        throw new UnsupportedOperationException("No synthetic post with this name");
+      }
     }
 
     Observable<Pair<DankSubmissionRequest, CachedSubmissionAndComments>> dbStream = getFromDbOrFetchSubmissionWithComments(oldRequest)
