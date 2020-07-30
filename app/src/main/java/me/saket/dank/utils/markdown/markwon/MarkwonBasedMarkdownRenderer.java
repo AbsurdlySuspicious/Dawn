@@ -87,6 +87,8 @@ public class MarkwonBasedMarkdownRenderer implements Markdown {
     // WARNING: this should be at the end.
     markdown = new SuperscriptMarkdownToHtml().convert(markdown);
 
+    Timber.tag("md_dev").d("markdown after fixes:\n%s", markdown);
+
     // It's better **not** to re-use the visitor between multiple calls.
     SpannableBuilder builder = new SpannableBuilder();
     Visitor visitor = new RedditSpoilerLinkVisitor(configuration, markdownOptions, builder);
