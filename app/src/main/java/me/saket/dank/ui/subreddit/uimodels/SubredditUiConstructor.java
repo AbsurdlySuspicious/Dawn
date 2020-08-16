@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 
 import com.f2prateek.rx.preferences2.Preference;
 
+import me.saket.dank.utils.*;
 import net.dean.jraw.models.Submission;
 import net.dean.jraw.models.SubmissionPreview;
 import net.dean.jraw.models.VoteDirection;
@@ -37,12 +38,6 @@ import me.saket.dank.ui.submission.SubredditNotFoundException;
 import me.saket.dank.ui.submission.adapter.ImageWithMultipleVariants;
 import me.saket.dank.ui.subreddit.SubmissionPaginationResult;
 import me.saket.dank.ui.subreddit.SubmissionThumbnailTypeMinusNsfw;
-import me.saket.dank.utils.JrawUtils2;
-import me.saket.dank.utils.Optional;
-import me.saket.dank.utils.Pair;
-import me.saket.dank.utils.Strings;
-import me.saket.dank.utils.Themes;
-import me.saket.dank.utils.Truss;
 import me.saket.dank.vote.VotingManager;
 import me.saket.dank.walkthrough.SubmissionGesturesWalkthrough;
 import me.saket.dank.widgets.swipe.SwipeActions;
@@ -264,9 +259,14 @@ public class SubredditUiConstructor {
     int postedAndPendingCommentCount = submission.getCommentCount() + pendingSyncReplyCount;
 
     Truss titleBuilder = new Truss();
-    titleBuilder.pushSpan(new ForegroundColorSpan(ContextCompat.getColor(c, Themes.voteColor(voteDirection))));
+    int voteColor = ContextCompat.getColor(c, Themes.voteColor(voteDirection));
+    titleBuilder.pushSpan(new ForegroundColorSpan(voteColor));
     titleBuilder.append(Strings.abbreviateScore(submissionScore));
     titleBuilder.popSpan();
+
+    if (true) // todo check pref
+      ColorReplicationIcons.pushVoteIcon(c, titleBuilder, voteDirection, voteColor, R.dimen.subreddit_submission_title);
+
     titleBuilder.append("  ");
     //noinspection deprecation
     titleBuilder.append(Html.fromHtml(submission.getTitle()));
