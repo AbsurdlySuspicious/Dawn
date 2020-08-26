@@ -255,8 +255,8 @@ class SubmissionUiConstructor @Inject constructor(
         .append(Strings.abbreviateScore(vote.toFloat()))
         .popSpan()
 
-    ColorReplicationIcons
-        .pushVoteIcon(
+    if (true) // todo check pref
+      ColorReplicationIcons.pushVoteIcon(
           context,
           titleBuilder,
           pendingOrDefaultVote,

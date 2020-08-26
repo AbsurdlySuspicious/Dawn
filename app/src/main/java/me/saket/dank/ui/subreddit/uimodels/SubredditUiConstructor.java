@@ -267,7 +267,8 @@ public class SubredditUiConstructor {
     titleBuilder.append(Strings.abbreviateScore(submissionScore));
     titleBuilder.popSpan();
 
-    ColorReplicationIcons.pushVoteIcon(c,
+    if (true) // todo check pref
+      ColorReplicationIcons.pushVoteIcon(c,
         titleBuilder,
         voteDirection,
         voteColor,
