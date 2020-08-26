@@ -264,7 +264,8 @@ public class SubredditUiConstructor {
     titleBuilder.append(Strings.abbreviateScore(submissionScore));
     titleBuilder.popSpan();
 
-    ColorReplicationIcons.pushVoteIcon(c, titleBuilder, voteDirection, voteColor, R.dimen.subreddit_submission_title);
+    if (true) // todo check pref
+      ColorReplicationIcons.pushVoteIcon(c, titleBuilder, voteDirection, voteColor, R.dimen.subreddit_submission_title);
 
     titleBuilder.append("  ");
     //noinspection deprecation
